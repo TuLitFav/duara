@@ -1,0 +1,177 @@
+Perfecto, voy a extraer y separar **exactamente** lo que me has ido dando para generar tres archivos:
+
+* `index.html` (página principal con listado de perfumes, carrito, checkout, etc.)
+* `login.html` (página para iniciar sesión)
+* `register.html` (página para crear cuenta)
+
+Además, incluiré un archivo `main.js` con la lógica JS común que usas (autenticación, carrito, etc.) para que puedas poner todo en tu carpeta `public` y funcione sin problemas.
+
+---
+
+## Paso 1: Extraer y separar el código de login y registro que tenías en los modales, y ponerlos en `login.html` y `register.html`.
+
+---
+
+### login.html
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Iniciar Sesión - Fragancia Elegante</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6">Iniciar Sesión</h2>
+        <form id="login-form" onsubmit="event.preventDefault(); login();">
+            <label for="login-email" class="block mb-2 font-semibold">Correo electrónico</label>
+            <input id="login-email" type="email" class="w-full px-4 py-3 border rounded mb-4" placeholder="tu@email.com" required />
+            
+            <label for="login-password" class="block mb-2 font-semibold">Contraseña</label>
+            <input id="login-password" type="password" class="w-full px-4 py-3 border rounded mb-6" placeholder="Contraseña" required />
+            
+            <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded hover:bg-purple-700 transition">
+                Iniciar Sesión
+            </button>
+        </form>
+        <p class="mt-4 text-center">
+            ¿No tienes cuenta? 
+            <a href="register.html" class="text-purple-600 hover:underline">Crear Cuenta</a>
+        </p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
+```
+
+---
+
+### register.html
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crear Cuenta - Fragancia Elegante</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-50 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6">Crear Cuenta</h2>
+        <form id="register-form" onsubmit="event.preventDefault(); register();">
+            <label for="register-name" class="block mb-2 font-semibold">Nombre</label>
+            <input id="register-name" type="text" class="w-full px-4 py-3 border rounded mb-4" placeholder="Tu nombre" required />
+            
+            <label for="register-email" class="block mb-2 font-semibold">Correo electrónico</label>
+            <input id="register-email" type="email" class="w-full px-4 py-3 border rounded mb-4" placeholder="tu@email.com" required />
+            
+            <label for="register-password" class="block mb-2 font-semibold">Contraseña</label>
+            <input id="register-password" type="password" class="w-full px-4 py-3 border rounded mb-4" placeholder="Contraseña" required />
+            
+            <label for="register-birthdate" class="block mb-2 font-semibold">Fecha de nacimiento (opcional)</label>
+            <input id="register-birthdate" type="date" class="w-full px-4 py-3 border rounded mb-6" />
+            
+            <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded hover:bg-purple-700 transition">
+                Crear Cuenta
+            </button>
+        </form>
+        <p class="mt-4 text-center">
+            ¿Ya tienes cuenta? 
+            <a href="login.html" class="text-purple-600 hover:underline">Iniciar Sesión</a>
+        </p>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
+```
+
+---
+
+## Paso 2: `index.html`
+
+Aquí tendrás la página principal con el listado de perfumes, carrito, checkout y lógica para mostrar modales de perfume, carrito, checkout (pero sin modales de login/registro, porque ahora están en páginas aparte).
+
+Voy a generar una versión compacta pero manteniendo toda la funcionalidad que me diste.
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fragancia Elegante - Tienda de Perfumes</title>
+    <link href="styles.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-50">
+
+    <header class="flex justify-between items-center p-6 bg-white shadow">
+        <h1 class="text-3xl font-bold text-purple-700 cursor-pointer" onclick="window.location.href='index.html'">Fragancia Elegante</h1>
+        <nav class="flex items-center space-x-6">
+            <div id="auth-section">
+                <a href="login.html" class="text-purple-600 hover:underline">Iniciar Sesión</a>
+                <span class="mx-2 text-gray-400">|</span>
+                <a href="register.html" class="text-purple-600 hover:underline">Crear Cuenta</a>
+            </div>
+            <div id="user-section" class="hidden items-center space-x-4">
+                <span id="user-name" class="font-semibold"></span>
+                <button onclick="logout()" class="text-red-600 hover:underline">Cerrar sesión</button>
+            </div>
+            <button onclick="showCart()" aria-label="Carrito" class="relative text-2xl">
+                🛒
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full text-xs px-2 hidden">0</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6">
+        <section id="perfume-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- Cards se generarán con JS -->
+        </section>
+    </main>
+
+    <!-- Perfume Details Modal -->
+    <div id="perfume-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-6 z-50">
+        <div class="bg-white rounded-lg max-w-lg w-full p-6 relative">
+            <button onclick="closePerfumeModal()" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
+            <h2 id="modal-title" class="text-2xl font-bold mb-4 text-purple-700"></h2>
+            <div id="modal-content" class="mb-6"></div>
+            <div class="flex justify-between">
+                <button id="modal-add-to-cart" class="bg-purple-600 text-white py-2 px-6 rounded hover:bg-purple-700 transition">Agregar al carrito</button>
+                <button onclick="addToWishlist()" class="bg-pink-500 text-white py-2 px-6 rounded hover:bg-pink-600 transition">Agregar a favoritos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-6 z-50">
+        <div class="bg-white rounded-lg max-w-md w-full p-6 relative max-h-[80vh] overflow-auto">
+            <button onclick="closeCart()" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
+            <h2 class="text-xl font-bold mb-4">Carrito de Compras</h2>
+            <div id="cart-empty" class="text-center text-gray-500 mb-4">Tu carrito está vacío.</div>
+            <div id="cart-items" class="space-y-4"></div>
+            <div id="cart-summary" class="mt-6 border-t pt-4 hidden">
+                <div class="flex justify-between font-semibold text-lg mb-4">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <button onclick="proceedToCheckout()" class="w-full bg-purple-600 text-white py-3 rounded hover:bg-purple-700 transition">Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-6 z-50 overflow-auto">
+        <div class="bg-white rounded-lg max-w-lg w-full p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckout()" class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold mb-4 text-purple-700">Finalizar Compra</h2>
+            <form id="checkout-form" onsubmit="event.preventDefault(); completeOrder();">
+```
